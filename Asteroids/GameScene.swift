@@ -47,6 +47,7 @@ class GameScene: SKScene {
         leftButton.lineWidth = 3
         self.addChild(leftButton)
         
+        
         //Up Button
         upButton = SKShapeNode(rectOfSize: CGSize(width: 160, height: 40))
         upButton.position = CGPoint(x: self.frame.width*0.9-60, y: self.frame.height*0.2)
@@ -66,7 +67,6 @@ class GameScene: SKScene {
         rightButton.lineWidth = 3
         self.addChild(rightButton)
 
-
         
         //Shoot Button
         shootButton = SKShapeNode(rectOfSize: CGSize(width: 120, height: 40))
@@ -76,8 +76,6 @@ class GameScene: SKScene {
         shootButton.strokeColor = UIColor.yellowColor()
         shootButton.lineWidth = 3
         self.addChild(shootButton)
-
-        
         
         
         // TODO: Set up ship
@@ -87,6 +85,7 @@ class GameScene: SKScene {
         ship.size = CGSize(width: 40, height: 40)
         ship.physicsBody = SKPhysicsBody(circleOfRadius: 20)
         ship.physicsBody?.angularDamping = 1
+        ship.physicsBody?.linearDamping = 0
         self.addChild(ship)
         
         //particle on ship
@@ -95,7 +94,6 @@ class GameScene: SKScene {
             //particle position thinks ship is in top right when ship in center. fix by subtracting
         particle.position = CGPoint(x: ship.position.x - self.frame.width/2, y: (ship.position.y-self.frame.height/2)-20)
         ship.addChild(particle!)
-        
         
     }
 
@@ -107,6 +105,10 @@ class GameScene: SKScene {
             let location = touch.locationInNode(self)
             
             // TODO: Act on touches in control boxes
+            if shootButton.containsPoint(location){
+                shootLaser()
+            }
+            
             if upButton.containsPoint(location){
                 upButtonPressed = true
             }
@@ -156,21 +158,46 @@ class GameScene: SKScene {
         // TODO
     }
     
-    func fireLaser(){
+    func shootLaser(){
         // TODO
+        let shotVelocity: CGFloat = 200
+        let laser = SKShapeNode(circleOfRadius: 2)
+        laser.fillColor = UIColor.whiteColor()
+        laser.position = offsetFromShip(ship.frame.height / 2)
+        laser.physicsBody = SKPhysicsBody(circleOfRadius: 2)
+        
+        let xComponent = cos(ship.zRotation) * shotVelocity
+        let yComponent = sin(ship.zRotation) * shotVelocity
+        
+        laser.physicsBody?.velocity.dx = ship.physicsBody!.velocity.dx + xComponent
+        laser.physicsBody?.velocity.dy = ship.physicsBody!.velocity.dy + yComponent
+        laser.physicsBody?.linearDamping = 0
+        
+        self.addChild(laser)
+        
     }
     
-    func rotate(direction: String){
-        // TODO
-        // The CGFloat is the degree change (in radians) in angular velocity
+    // Takes a vector magnitude (CGFloat) and returns a CGPoint based on the zRotation of the
+    // ship. This is primarily used to calculate the point at which the laser spawns at.
+    func offsetFromShip(offset: CGFloat) ->CGPoint{
         
+        let x = ship.position.x + cos(ship.zRotation) * offset
+        let y = ship.position.y + sin(ship.zRotation) * offset
+        
+        return CGPoint(x: x, y: y)
+    }
+    
+    // Called when the left/right buttons are pressed, and applies angular velocity
+    // in the desired direction
+    func rotate(direction: String){
+        
+        // The CGFloat is the degree change (in radians) in angular velocity
         if direction == "right"{
             ship.physicsBody?.angularVelocity -= CGFloat(0.075)
         }
         else{
             ship.physicsBody?.angularVelocity += CGFloat(0.075)
         }
-        
     }
     
     func thrust(){
@@ -179,8 +206,8 @@ class GameScene: SKScene {
         // Thrust magnitude, to be broken down into x/y components
         let thrust = CGFloat(5)
         
-        let xComponent = cos(ship.zRotation + CGFloat(M_PI) / 2) * thrust
-        let yComponent = sin(ship.zRotation + CGFloat(M_PI) / 2) * thrust
+        let xComponent = cos(ship.zRotation) * thrust
+        let yComponent = sin(ship.zRotation) * thrust
         
         ship.physicsBody?.velocity.dx += xComponent
         ship.physicsBody?.velocity.dy += yComponent
@@ -197,12 +224,11 @@ class GameScene: SKScene {
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
         
-        particle.emissionAngle = ship.zRotation - 0.5 * CGFloat(M_PI)
+        particle.emissionAngle = ship.zRotation - CGFloat(M_PI)
         
         if upButtonPressed{
             thrust()
         }
-        
         if leftButtonPressed{
             rotate("left")
         }

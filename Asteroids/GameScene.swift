@@ -86,6 +86,7 @@ class GameScene: SKScene {
         ship = SKSpriteNode(imageNamed: "Ship")
         ship.position = CGPoint(x: self.frame.width / 2, y: self.frame.height / 2)
         ship.zPosition = 10
+        ship.zRotation = CGFloat(M_PI) / 2
         ship.size = CGSize(width: 40, height: 40)
         ship.physicsBody = SKPhysicsBody(circleOfRadius: 20)
         ship.physicsBody?.angularDamping = 1
@@ -96,7 +97,8 @@ class GameScene: SKScene {
         particle = SKEmitterNode(fileNamed: "FireParticle.sks")
         particle!.targetNode = self
             //particle position thinks ship is in top right when ship in center. fix by subtracting
-        particle.position = CGPoint(x: ship.position.x - self.frame.width/2, y: (ship.position.y-self.frame.height/2)-20)
+        particle.position = CGPoint(x: (ship.position.x - self.frame.width/2) - 20, y: (ship.position.y-self.frame.height/2))
+        particle.particleBirthRate = 0
         ship.addChild(particle!)
 
         
@@ -145,6 +147,10 @@ class GameScene: SKScene {
             
             if upButton.containsPoint(location){
                 upButtonPressed = true
+                particle.particleBirthRate = 500
+            }
+            else{
+                particle.particleBirthRate = 0
             }
             if leftButton.containsPoint(location){
                 leftButtonPressed = true
@@ -152,6 +158,8 @@ class GameScene: SKScene {
             else if rightButton.containsPoint(location){
                 rightButtonPressed = true
             }
+            
+            
         }
     }
     
@@ -159,6 +167,8 @@ class GameScene: SKScene {
         leftButtonPressed = false
         rightButtonPressed = false
         upButtonPressed = false
+        
+        particle.particleBirthRate = 0
     }
     
     func spawnLargeAsteroid(){

@@ -10,7 +10,13 @@ import SpriteKit
 
 // TODO: Bitmask stuff here
 
-class GameScene: SKScene {
+let shipCatagory: UInt32 = 1 << 0
+let laserCatagory: UInt32 = 1 << 1
+let largeAsteroidCatagory: UInt32 = 1 << 2
+let mediumAsteroidCatagory: UInt32 = 1 << 3
+let smallAsteroidCatagory: UInt32 = 1 << 4
+
+class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // TODO: Put all global variables here?
     var ship: SKSpriteNode!
@@ -37,7 +43,8 @@ class GameScene: SKScene {
         self.scaleMode = SKSceneScaleMode.ResizeFill
         self.physicsWorld.gravity = CGVector(dx: 0, dy: 0)
         // self.physicsWorld.contactDelegate = self  // This line is important only for physicsContactDelegate
-        self.physicsBody = SKPhysicsBody(edgeLoopFromRect: self.frame)
+        // self.physicsBody = SKPhysicsBody(edgeLoopFromRect: self.frame)
+        self.physicsBody?.contactTestBitMask = 0 //nothing bounces off of the edge, it will wrap instead
         self.backgroundColor = UIColor.blackColor();
         
         // TODO: Set up control boxes
@@ -86,17 +93,22 @@ class GameScene: SKScene {
         ship = SKSpriteNode(imageNamed: "Ship")
         ship.position = CGPoint(x: self.frame.width / 2, y: self.frame.height / 2)
         ship.zPosition = 10
+        ship.zRotation = CGFloat(M_PI) / 2
         ship.size = CGSize(width: 40, height: 40)
         ship.physicsBody = SKPhysicsBody(circleOfRadius: 20)
         ship.physicsBody?.angularDamping = 1
         ship.physicsBody?.linearDamping = 0
+        ship.physicsBody?.categoryBitMask = shipCatagory
+        ship.physicsBody?.contactTestBitMask = 0 // collides with nothing at the moment CHANGE THIS LATER
+        ship.name = "wrappable" // Used when checking all children for wrapping
         self.addChild(ship)
         
         //particle on ship
         particle = SKEmitterNode(fileNamed: "FireParticle.sks")
         particle!.targetNode = self
             //particle position thinks ship is in top right when ship in center. fix by subtracting
-        particle.position = CGPoint(x: ship.position.x - self.frame.width/2, y: (ship.position.y-self.frame.height/2)-20)
+        particle.position = CGPoint(x: (ship.position.x - self.frame.width/2) - 20, y: (ship.position.y-self.frame.height/2))
+        particle.particleBirthRate = 0
         ship.addChild(particle!)
 
         
@@ -119,6 +131,7 @@ class GameScene: SKScene {
             
             if upButton.containsPoint(location){
                 upButtonPressed = true
+                particle.particleBirthRate = 500
             }
             if leftButton.containsPoint(location){
                 leftButtonPressed = true
@@ -146,6 +159,10 @@ class GameScene: SKScene {
             
             if upButton.containsPoint(location){
                 upButtonPressed = true
+                particle.particleBirthRate = 500
+            }
+            else{
+                particle.particleBirthRate = 0
             }
             if leftButton.containsPoint(location){
                 leftButtonPressed = true
@@ -160,8 +177,12 @@ class GameScene: SKScene {
         leftButtonPressed = false
         rightButtonPressed = false
         upButtonPressed = false
+        
+        particle.particleBirthRate = 0
     }
     
+    // Will need to be updated with bitmask stuff and wrapping stuff
+    // asteroid.name = "wrappable" so that wrapping automagically works
     func spawnLargeAsteroid(){
         
         let rand = Int(arc4random_uniform(3))+1
@@ -175,6 +196,7 @@ class GameScene: SKScene {
         }
         
         //TODO loop randx and randy to check if good location
+
         
         //choose spawn piont for asteroid (any x, top 90% y)
         let randx = self.frame.width * (CGFloat(arc4random_uniform(10))+1)/10
@@ -210,6 +232,7 @@ class GameScene: SKScene {
         laser.fillColor = UIColor.whiteColor()
         laser.position = offsetFromShip(ship.frame.height / 2)
         laser.physicsBody = SKPhysicsBody(circleOfRadius: 2)
+        laser.name = "wrappable" // Used for wrapping
         
         let xComponent = cos(ship.zRotation) * shotVelocity
         let yComponent = sin(ship.zRotation) * shotVelocity
@@ -269,6 +292,7 @@ class GameScene: SKScene {
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
         
+        // Ship movement related things
         particle.emissionAngle = ship.zRotation - CGFloat(M_PI)
         
         if upButtonPressed{
@@ -281,5 +305,27 @@ class GameScene: SKScene {
             rotate("right")
         }
         
+        // Edge wrapping things
+        
+        for node in self.children{
+            
+            if node.name == "wrappable"{
+                
+                if node.position.x < self.frame.minX{
+                    node.position.x = self.frame.maxX
+                }
+                if node.position.x > self.frame.maxX{
+                    node.position.x = self.frame.minX
+                }
+                
+                
+                if node.position.y < self.frame.minY{
+                    node.position.y = self.frame.maxY
+                }
+                if node.position.y > self.frame.maxY{
+                    node.position.y = self.frame.minY
+                }
+            }
+        }
     }
 }

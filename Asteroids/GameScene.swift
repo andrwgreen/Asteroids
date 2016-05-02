@@ -126,7 +126,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             // TODO: Act on touches in control boxes
             if shootButton.containsPoint(location){
                 shootLaser()
-                runAction(SKAction.playSoundFileNamed("pew_final", waitForCompletion: false))
+                runAction(SKAction.playSoundFileNamed("pew_final.wav", waitForCompletion: false))
             }
             
             if upButton.containsPoint(location){

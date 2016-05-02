@@ -114,6 +114,7 @@ class GameScene: SKScene {
             // TODO: Act on touches in control boxes
             if shootButton.containsPoint(location){
                 shootLaser()
+                runAction(SKAction.playSoundFileNamed("pew_final", waitForCompletion: false))
             }
             
             if upButton.containsPoint(location){

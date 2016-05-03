@@ -291,7 +291,7 @@ class GameScene: SKScene {
         return CGFloat(Float(arc4random()) / Float(UINT32_MAX))
     }
     
-    func fireLaser(){
+    func shootLaser(){
         // TODO
     }
     

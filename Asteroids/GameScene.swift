@@ -127,7 +127,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             // TODO: Act on touches in control boxes
             if shootButton.containsPoint(location){
                 shootLaser()
-                //runAction(SKAction.playSoundFileNamed("pew_final.wav", waitForCompletion: false))
+                runAction(SKAction.playSoundFileNamed("pew_final.wav", waitForCompletion: false))
             }
             
             if upButton.containsPoint(location){
@@ -161,6 +161,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if upButton.containsPoint(location){
                 upButtonPressed = true
                 particle.particleBirthRate = 500
+                
             }
             else{
                 particle.particleBirthRate = 0

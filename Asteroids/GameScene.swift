@@ -102,7 +102,7 @@ class GameScene: SKScene {
 
         
 
-
+      
 
         
         
@@ -223,7 +223,11 @@ class GameScene: SKScene {
 
         //set position to that given in call
         //      (location of large asteroid death)
-        mediumAsteroid.position = CGPoint(x: x, y: y)
+        // +/- 15
+        let adjustedx = x + ((random() * 30) - 15)
+        let adjustedy = y + ((random() * 30) - 15)
+        
+        mediumAsteroid.position = CGPoint(x: adjustedx, y: adjustedy)
         mediumAsteroid.zPosition = 1
         mediumAsteroid.size = CGSize(width: 60, height: 60)
         mediumAsteroid.physicsBody = SKPhysicsBody(circleOfRadius: 30)
@@ -249,16 +253,20 @@ class GameScene: SKScene {
         let rand = Int(random()*3)+1
         switch (rand){
         case 1: smallAsteroid = SKSpriteNode(imageNamed: "SmallAsteroid1")
-        case 2: smallAsteroid = SKSpriteNode(imageNamed: "SmallAsteroid1")
+        case 2: smallAsteroid = SKSpriteNode(imageNamed: "SmallAsteroid2")
         default: smallAsteroid = SKSpriteNode(imageNamed: "SmallAsteroid3")
         }
         
         //set position to that given in call
         //      (location of medium asteroid death)
-        smallAsteroid.position = CGPoint(x: x, y: y)
+        // +/- 15
+        let adjustedx = x + ((random() * 30) - 15)
+        let adjustedy = y + ((random() * 30) - 15)
+        
+        smallAsteroid.position = CGPoint(x: adjustedx, y: adjustedy)
         smallAsteroid.zPosition = 1
-        smallAsteroid.size = CGSize(width: 40, height: 40)
-        smallAsteroid.physicsBody = SKPhysicsBody(circleOfRadius: 15)
+        smallAsteroid.size = CGSize(width: 30, height: 30)
+        smallAsteroid.physicsBody = SKPhysicsBody(circleOfRadius: 12)
         smallAsteroid.physicsBody?.angularDamping = 0
         smallAsteroid.physicsBody?.linearDamping = 0
         

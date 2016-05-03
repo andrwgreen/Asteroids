@@ -101,9 +101,8 @@ class GameScene: SKScene {
         ship.addChild(particle!)
 
         
-        
-        
-        
+
+
 
         
         
@@ -164,13 +163,12 @@ class GameScene: SKScene {
     
     func spawnLargeAsteroid(){
         
+        //set random sprite
         let rand = Int(random()*3)+1
-
         switch (rand){
         case 1: largeAsteroid = SKSpriteNode(imageNamed: "LargeAsteroid1")
         case 2: largeAsteroid = SKSpriteNode(imageNamed: "LargeAsteroid2")
-        case 3: largeAsteroid = SKSpriteNode(imageNamed: "LargeAsteroid3")
-        default: largeAsteroid = SKSpriteNode(imageNamed: "LargeAsteroid1")
+        default: largeAsteroid = SKSpriteNode(imageNamed: "LargeAsteroid3")
         }
         
         
@@ -178,20 +176,18 @@ class GameScene: SKScene {
         let xBuffer = self.frame.width * 0.1
         let yBuffer = self.frame.height * 0.1
         
-        //set spawn as ship. forced to reset in loop
-        var randx = ship.position.x
-        var randy = ship.position.y
-        
+        var randx: CGFloat!
+        var randy: CGFloat!
         
         //check if spawn is within buffer of ship. if so, redo
-        while(((randx >= (ship.position.x - xBuffer)) && (randx <= (ship.position.x + xBuffer)))
-            || ((randy >= (ship.position.y - yBuffer)) && (randy <= (ship.position.y + yBuffer)))){
+       repeat{
                 
                 print("spawn not good. redo")
                 //set spawn location for asteroid (any x, top 90% y)
                 randx = random() * self.frame.width
                 randy = random() * 0.9 * self.frame.height + 0.1 * self.frame.height
-        }
+        }while(((randx >= (ship.position.x - xBuffer)) && (randx <= (ship.position.x + xBuffer)))
+        || ((randy >= (ship.position.y - yBuffer)) && (randy <= (ship.position.y + yBuffer))))
         
         
         
@@ -214,9 +210,73 @@ class GameScene: SKScene {
         largeAsteroid.physicsBody?.velocity = CGVector(dx: randLinVx, dy: randLinVy)
         
         self.addChild(largeAsteroid)
-
-        
     }
+    
+    func spawnMediumAsteroid(x: CGFloat, y: CGFloat){
+        //set random sprite
+        let rand = Int(random()*3)+1
+        switch (rand){
+        case 1: mediumAsteroid = SKSpriteNode(imageNamed: "MediumAsteroid1")
+        case 2: mediumAsteroid = SKSpriteNode(imageNamed: "MediumAsteroid2")
+        default: mediumAsteroid = SKSpriteNode(imageNamed: "MediumAsteroid3")
+        }
+
+        //set position to that given in call
+        //      (location of large asteroid death)
+        mediumAsteroid.position = CGPoint(x: x, y: y)
+        mediumAsteroid.zPosition = 1
+        mediumAsteroid.size = CGSize(width: 60, height: 60)
+        mediumAsteroid.physicsBody = SKPhysicsBody(circleOfRadius: 30)
+        mediumAsteroid.physicsBody?.angularDamping = 0
+        mediumAsteroid.physicsBody?.linearDamping = 0
+        
+        //give angular and linear velocity at default
+        //angular velocity between -0.5 and 0.5
+        let randAngV = random() - 0.5
+        //linear velocity from -25 to 25
+        let randLinVx = random() * 50 - 25
+        let randLinVy = random() * 50 - 25
+        
+        
+        mediumAsteroid.physicsBody?.angularVelocity = randAngV
+        mediumAsteroid.physicsBody?.velocity = CGVector(dx: randLinVx, dy: randLinVy)
+        
+        self.addChild(mediumAsteroid)
+    }
+    
+    func spawnSmallAsteroid(x: CGFloat, y: CGFloat){
+        //set random sprite
+        let rand = Int(random()*3)+1
+        switch (rand){
+        case 1: smallAsteroid = SKSpriteNode(imageNamed: "SmallAsteroid1")
+        case 2: smallAsteroid = SKSpriteNode(imageNamed: "SmallAsteroid1")
+        default: smallAsteroid = SKSpriteNode(imageNamed: "SmallAsteroid3")
+        }
+        
+        //set position to that given in call
+        //      (location of medium asteroid death)
+        smallAsteroid.position = CGPoint(x: x, y: y)
+        smallAsteroid.zPosition = 1
+        smallAsteroid.size = CGSize(width: 40, height: 40)
+        smallAsteroid.physicsBody = SKPhysicsBody(circleOfRadius: 15)
+        smallAsteroid.physicsBody?.angularDamping = 0
+        smallAsteroid.physicsBody?.linearDamping = 0
+        
+        //give angular and linear velocity at default
+        //angular velocity between -0.5 and 0.5
+        let randAngV = random() - 0.5
+        //linear velocity from -15 to 15
+        let randLinVx = random() * 30 - 15
+        let randLinVy = random() * 30 - 15
+        
+        
+        smallAsteroid.physicsBody?.angularVelocity = randAngV
+        smallAsteroid.physicsBody?.velocity = CGVector(dx: randLinVx, dy: randLinVy)
+        
+        self.addChild(smallAsteroid)
+    }
+    
+    
     
     func random() -> CGFloat{
         //return random number 0-1

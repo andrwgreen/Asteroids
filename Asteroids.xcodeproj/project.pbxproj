@@ -16,6 +16,7 @@
 		F0DC549B1CD2572E005EB3BD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F0DC54991CD2572E005EB3BD /* LaunchScreen.storyboard */; };
 		F0DC54A61CD2572E005EB3BD /* AsteroidsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0DC54A51CD2572E005EB3BD /* AsteroidsTests.swift */; };
 		F0DC54B11CD2572E005EB3BD /* AsteroidsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0DC54B01CD2572E005EB3BD /* AsteroidsUITests.swift */; };
+		F0F8D45F1CD9086B00212D2A /* pew_final.wav in Resources */ = {isa = PBXBuildFile; fileRef = F0F8D45E1CD9086B00212D2A /* pew_final.wav */; };
 		F5118A711CD444B500A2E0EB /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F5118A701CD444B500A2E0EB /* Default-568h@2x.png */; };
 		F54754F11CD45ABE00D66F58 /* FireParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = F54754F01CD45ABE00D66F58 /* FireParticle.sks */; };
 /* End PBXBuildFile section */
@@ -53,6 +54,7 @@
 		F0DC54AC1CD2572E005EB3BD /* AsteroidsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AsteroidsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F0DC54B01CD2572E005EB3BD /* AsteroidsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsteroidsUITests.swift; sourceTree = "<group>"; };
 		F0DC54B21CD2572E005EB3BD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F0F8D45E1CD9086B00212D2A /* pew_final.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = pew_final.wav; sourceTree = "<group>"; };
 		F5118A701CD444B500A2E0EB /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		F54754F01CD45ABE00D66F58 /* FireParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = FireParticle.sks; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -82,13 +84,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		F0714B4E1CD7D857009E336C /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Resources;
-			sourceTree = "<group>";
-		};
 		F0DC54801CD2572E005EB3BD = {
 			isa = PBXGroup;
 			children = (
@@ -113,13 +108,13 @@
 		F0DC548B1CD2572E005EB3BD /* Asteroids */ = {
 			isa = PBXGroup;
 			children = (
-				F0714B4E1CD7D857009E336C /* Resources */,
 				F0DC548C1CD2572E005EB3BD /* AppDelegate.swift */,
 				F0DC548E1CD2572E005EB3BD /* GameScene.sks */,
 				F0DC54901CD2572E005EB3BD /* GameScene.swift */,
 				F54754F01CD45ABE00D66F58 /* FireParticle.sks */,
 				F0DC54921CD2572E005EB3BD /* GameViewController.swift */,
 				F0DC54941CD2572E005EB3BD /* Main.storyboard */,
+				F0F8D4601CD9087700212D2A /* Sounds */,
 				F0DC54971CD2572E005EB3BD /* Assets.xcassets */,
 				F0DC54991CD2572E005EB3BD /* LaunchScreen.storyboard */,
 				F0DC549C1CD2572E005EB3BD /* Info.plist */,
@@ -143,6 +138,14 @@
 				F0DC54B21CD2572E005EB3BD /* Info.plist */,
 			);
 			path = AsteroidsUITests;
+			sourceTree = "<group>";
+		};
+		F0F8D4601CD9087700212D2A /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				F0F8D45E1CD9086B00212D2A /* pew_final.wav */,
+			);
+			name = Sounds;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -213,7 +216,7 @@
 				TargetAttributes = {
 					F0DC54881CD2572E005EB3BD = {
 						CreatedOnToolsVersion = 7.3;
-						DevelopmentTeam = H9SXWJQ397;
+						DevelopmentTeam = L25TG78RCE;
 					};
 					F0DC54A01CD2572E005EB3BD = {
 						CreatedOnToolsVersion = 7.3;
@@ -258,6 +261,7 @@
 				F0DC54981CD2572E005EB3BD /* Assets.xcassets in Resources */,
 				F5118A711CD444B500A2E0EB /* Default-568h@2x.png in Resources */,
 				F0DC54961CD2572E005EB3BD /* Main.storyboard in Resources */,
+				F0F8D45F1CD9086B00212D2A /* pew_final.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

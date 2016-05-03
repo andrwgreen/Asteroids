@@ -113,7 +113,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
         
 
-      
 
         
     }
@@ -128,7 +127,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             // TODO: Act on touches in control boxes
             if shootButton.containsPoint(location){
                 shootLaser()
-                runAction(SKAction.playSoundFileNamed("pew_final.wav", waitForCompletion: false))
+                //runAction(SKAction.playSoundFileNamed("pew_final.wav", waitForCompletion: false))
             }
             
             if upButton.containsPoint(location){
@@ -237,6 +236,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func spawnMediumAsteroid(x: CGFloat, y: CGFloat){
+        
         //set random sprite
         let rand = Int(random()*3)+1
         switch (rand){
@@ -273,6 +273,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func spawnSmallAsteroid(x: CGFloat, y: CGFloat){
+
         //set random sprite
         let rand = Int(random()*3)+1
         switch (rand){

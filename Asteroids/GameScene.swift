@@ -101,6 +101,9 @@ class GameScene: SKScene {
         ship.addChild(particle!)
 
         
+        
+        
+        
 
         
         
@@ -161,8 +164,7 @@ class GameScene: SKScene {
     
     func spawnLargeAsteroid(){
         
-        let rand = Int(arc4random_uniform(3))+1
-        print(rand)
+        let rand = Int(random()*3)+1
 
         switch (rand){
         case 1: largeAsteroid = SKSpriteNode(imageNamed: "LargeAsteroid1")
@@ -171,11 +173,27 @@ class GameScene: SKScene {
         default: largeAsteroid = SKSpriteNode(imageNamed: "LargeAsteroid1")
         }
         
-        //TODO loop randx and randy to check if good location
         
-        //choose spawn piont for asteroid (any x, top 90% y)
-        let randx = self.frame.width * (CGFloat(arc4random_uniform(10))+1)/10
-        let randy = self.frame.height * (CGFloat(arc4random_uniform(9))+2)/10
+        //set the buffer zone
+        let xBuffer = self.frame.width * 0.1
+        let yBuffer = self.frame.height * 0.1
+        
+        //set spawn as ship. forced to reset in loop
+        var randx = ship.position.x
+        var randy = ship.position.y
+        
+        
+        //check if spawn is within buffer of ship. if so, redo
+        while(((randx >= (ship.position.x - xBuffer)) && (randx <= (ship.position.x + xBuffer)))
+            || ((randy >= (ship.position.y - yBuffer)) && (randy <= (ship.position.y + yBuffer)))){
+                
+                print("spawn not good. redo")
+                //set spawn location for asteroid (any x, top 90% y)
+                randx = random() * self.frame.width
+                randy = random() * 0.9 * self.frame.height + 0.1 * self.frame.height
+        }
+        
+        
         
         largeAsteroid.position = CGPoint(x: randx, y: randy)
         largeAsteroid.zPosition = 1
@@ -186,10 +204,10 @@ class GameScene: SKScene {
         
         //give angular and linear velocity at default
         //angular velocity between -0.5 and 0.5
-        let randAngV = CGFloat(Float(arc4random()) / Float(UINT32_MAX)) - 0.5
+        let randAngV = random() - 0.5
         //linear velocity from -50 to 50
-        let randLinVx = CGFloat(Float(arc4random()) / Float(UINT32_MAX)) * 100 - 50
-        let randLinVy = CGFloat(Float(arc4random()) / Float(UINT32_MAX)) * 100 - 50
+        let randLinVx = random() * 100 - 50
+        let randLinVy = random() * 100 - 50
 
         
         largeAsteroid.physicsBody?.angularVelocity = randAngV
@@ -198,6 +216,11 @@ class GameScene: SKScene {
         self.addChild(largeAsteroid)
 
         
+    }
+    
+    func random() -> CGFloat{
+        //return random number 0-1
+        return CGFloat(Float(arc4random()) / Float(UINT32_MAX))
     }
     
     func fireLaser(){

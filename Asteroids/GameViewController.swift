@@ -41,6 +41,8 @@ class GameViewController: UIViewController {
             return .All
         }
     }
+    
+    //override func supportedInterface Orientations() -> UIInterface.....
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

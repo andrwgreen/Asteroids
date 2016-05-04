@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F0714B501CD7D8A6009E336C /* pew_final.wav in Resources */ = {isa = PBXBuildFile; fileRef = F0714B4F1CD7D8A6009E336C /* pew_final.wav */; };
 		F0DC548D1CD2572E005EB3BD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0DC548C1CD2572E005EB3BD /* AppDelegate.swift */; };
 		F0DC548F1CD2572E005EB3BD /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = F0DC548E1CD2572E005EB3BD /* GameScene.sks */; };
 		F0DC54911CD2572E005EB3BD /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0DC54901CD2572E005EB3BD /* GameScene.swift */; };
@@ -39,7 +38,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		F0714B4F1CD7D8A6009E336C /* pew_final.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = pew_final.wav; path = "../../../Dropbox/College/Freshman Year/CS 214/Final Project/pew_final.wav"; sourceTree = "<group>"; };
 		F0DC54891CD2572E005EB3BD /* Asteroids.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Asteroids.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F0DC548C1CD2572E005EB3BD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F0DC548E1CD2572E005EB3BD /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -87,7 +85,6 @@
 		F0714B4E1CD7D857009E336C /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				F0714B4F1CD7D8A6009E336C /* pew_final.wav */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -216,7 +213,7 @@
 				TargetAttributes = {
 					F0DC54881CD2572E005EB3BD = {
 						CreatedOnToolsVersion = 7.3;
-						DevelopmentTeam = L25TG78RCE;
+						DevelopmentTeam = H9SXWJQ397;
 					};
 					F0DC54A01CD2572E005EB3BD = {
 						CreatedOnToolsVersion = 7.3;
@@ -261,7 +258,6 @@
 				F0DC54981CD2572E005EB3BD /* Assets.xcassets in Resources */,
 				F5118A711CD444B500A2E0EB /* Default-568h@2x.png in Resources */,
 				F0DC54961CD2572E005EB3BD /* Main.storyboard in Resources */,
-				F0714B501CD7D8A6009E336C /* pew_final.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -439,6 +435,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = edu.wiu.cwa106.Asteroids;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -453,6 +450,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = edu.wiu.cwa106.Asteroids;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

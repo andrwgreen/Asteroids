@@ -381,6 +381,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // TODO
     }
     
+    
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
         

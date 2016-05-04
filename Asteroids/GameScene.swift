@@ -15,6 +15,7 @@ let laserCatagory: UInt32 = 1 << 1
 let largeAsteroidCatagory: UInt32 = 1 << 2
 let mediumAsteroidCatagory: UInt32 = 1 << 3
 let smallAsteroidCatagory: UInt32 = 1 << 4
+let asteroidCatagory: UInt32 = 1 << 5
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
@@ -32,9 +33,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var rightButton: SKShapeNode!
     var upButton:    SKShapeNode!
     var shootButton: SKShapeNode!
+    var resetButton: SKLabelNode!
     var upButtonPressed = false
     var leftButtonPressed = false
     var rightButtonPressed = false
+    var asteroidTimer: NSTimer!
     
     var score = 0
     
@@ -46,8 +49,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // self.physicsBody = SKPhysicsBody(edgeLoopFromRect: self.frame)
         self.physicsBody?.contactTestBitMask = 0 //nothing bounces off of the edge, it will wrap instead
         self.backgroundColor = UIColor.blackColor();
-        
-        // TODO: Set up control boxes
         
         //Left Button
         leftButton = SKShapeNode(rectOfSize: CGSize(width: 60, height: 70))
@@ -77,7 +78,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         rightButton.strokeColor = UIColor.blueColor()
         rightButton.lineWidth = 3
         self.addChild(rightButton)
-
+        
         
         //Shoot Button
         shootButton = SKShapeNode(rectOfSize: CGSize(width: 100, height: 60))
@@ -88,8 +89,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         shootButton.lineWidth = 3
         self.addChild(shootButton)
         
+        resetButton = SKLabelNode(text: "reset")
+        resetButton.position = CGPoint(x: self.frame.midX, y: self.frame.minY + resetButton.frame.height / 2)
+        self.addChild(resetButton)
         
-        // TODO: Set up ship
+        setupGame()
+        
+    }
+
+    func setupGame(){
+        
         ship = SKSpriteNode(imageNamed: "Ship")
         ship.position = CGPoint(x: self.frame.width / 2, y: self.frame.height / 2)
         ship.zPosition = 10
@@ -106,14 +115,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //particle on ship
         particle = SKEmitterNode(fileNamed: "FireParticle.sks")
         particle!.targetNode = self
-            //particle position thinks ship is in top right when ship in center. fix by subtracting
+        //particle position thinks ship is in top right when ship in center. fix by subtracting
         particle.position = CGPoint(x: (ship.position.x - self.frame.width/2) - 20, y: (ship.position.y-self.frame.height/2))
         particle.particleBirthRate = 0
         ship.addChild(particle!)
-
         
-
-        
+        // Set up timer
+        asteroidTimer = NSTimer.scheduledTimerWithTimeInterval(10, target: self, selector: #selector(GameScene.spawnLargeAsteroid), userInfo: nil, repeats: true)
+    }
+    
+    func clearGame(){
+        asteroidTimer.invalidate()
+        ship.removeFromParent()
+        for node in self.children{
+            if node.name == "wrappable"{
+                node.removeFromParent()
+            }
+        }
     }
 
 
@@ -142,6 +160,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             else if rightButton.containsPoint(location){
                 rightButtonPressed = true
             }
+            else if resetButton.containsPoint(location){
+                clearGame()
+                setupGame()
+            }
             
         }
     }
@@ -163,6 +185,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if upButton.containsPoint(location){
                 upButtonPressed = true
                 particle.particleBirthRate = 500
+                
             }
             else{
                 particle.particleBirthRate = 0
@@ -188,44 +211,136 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // asteroid.name = "wrappable" so that wrapping automagically works
     func spawnLargeAsteroid(){
         
-        let rand = Int(arc4random_uniform(3))+1
-        print(rand)
-
+        //set random sprite
+        let rand = Int(random()*3)+1
         switch (rand){
         case 1: largeAsteroid = SKSpriteNode(imageNamed: "LargeAsteroid1")
         case 2: largeAsteroid = SKSpriteNode(imageNamed: "LargeAsteroid2")
-        case 3: largeAsteroid = SKSpriteNode(imageNamed: "LargeAsteroid3")
-        default: largeAsteroid = SKSpriteNode(imageNamed: "LargeAsteroid1")
+        default: largeAsteroid = SKSpriteNode(imageNamed: "LargeAsteroid3")
         }
         
-        //TODO loop randx and randy to check if good location
-
         
-        //choose spawn piont for asteroid (any x, top 90% y)
-        let randx = self.frame.width * (CGFloat(arc4random_uniform(10))+1)/10
-        let randy = self.frame.height * (CGFloat(arc4random_uniform(9))+2)/10
+        //set the buffer zone
+        let xBuffer = self.frame.width * 0.1
+        let yBuffer = self.frame.height * 0.1
+        
+        var randx: CGFloat!
+        var randy: CGFloat!
+        
+        //check if spawn is within buffer of ship. if so, redo
+       repeat{
+                
+                print("spawn not good. redo")
+                //set spawn location for asteroid (any x, top 90% y)
+                randx = random() * self.frame.width
+                randy = random() * 0.9 * self.frame.height + 0.1 * self.frame.height
+        }while(((randx >= (ship.position.x - xBuffer)) && (randx <= (ship.position.x + xBuffer)))
+        || ((randy >= (ship.position.y - yBuffer)) && (randy <= (ship.position.y + yBuffer))))
+        
+        
         
         largeAsteroid.position = CGPoint(x: randx, y: randy)
         largeAsteroid.zPosition = 1
         largeAsteroid.size = CGSize(width: 100, height: 100)
         largeAsteroid.physicsBody = SKPhysicsBody(circleOfRadius: 45)
         largeAsteroid.physicsBody?.angularDamping = 0
+        largeAsteroid.name = "wrappable"
         largeAsteroid.physicsBody?.linearDamping = 0
+        largeAsteroid.physicsBody?.categoryBitMask = asteroidCatagory
         
         //give angular and linear velocity at default
         //angular velocity between -0.5 and 0.5
-        let randAngV = CGFloat(Float(arc4random()) / Float(UINT32_MAX)) - 0.5
+        let randAngV = random() - 0.5
         //linear velocity from -50 to 50
-        let randLinVx = CGFloat(Float(arc4random()) / Float(UINT32_MAX)) * 100 - 50
-        let randLinVy = CGFloat(Float(arc4random()) / Float(UINT32_MAX)) * 100 - 50
+        let randLinVx = random() * 100 - 50
+        let randLinVy = random() * 100 - 50
 
         
         largeAsteroid.physicsBody?.angularVelocity = randAngV
         largeAsteroid.physicsBody?.velocity = CGVector(dx: randLinVx, dy: randLinVy)
         
         self.addChild(largeAsteroid)
-
+    }
+    
+    func spawnMediumAsteroid(x: CGFloat, y: CGFloat){
         
+        //set random sprite
+        let rand = Int(random()*3)+1
+        switch (rand){
+        case 1: mediumAsteroid = SKSpriteNode(imageNamed: "MediumAsteroid1")
+        case 2: mediumAsteroid = SKSpriteNode(imageNamed: "MediumAsteroid2")
+        default: mediumAsteroid = SKSpriteNode(imageNamed: "MediumAsteroid3")
+        }
+
+        //set position to that given in call
+        //      (location of large asteroid death)
+        // +/- 15
+        let adjustedx = x + ((random() * 30) - 15)
+        let adjustedy = y + ((random() * 30) - 15)
+        
+        mediumAsteroid.position = CGPoint(x: adjustedx, y: adjustedy)
+        mediumAsteroid.zPosition = 1
+        mediumAsteroid.size = CGSize(width: 60, height: 60)
+        mediumAsteroid.physicsBody = SKPhysicsBody(circleOfRadius: 30)
+        mediumAsteroid.physicsBody?.angularDamping = 0
+        mediumAsteroid.physicsBody?.linearDamping = 0
+        
+        //give angular and linear velocity at default
+        //angular velocity between -0.5 and 0.5
+        let randAngV = random() - 0.5
+        //linear velocity from -25 to 25
+        let randLinVx = random() * 50 - 25
+        let randLinVy = random() * 50 - 25
+        
+        
+        mediumAsteroid.physicsBody?.angularVelocity = randAngV
+        mediumAsteroid.physicsBody?.velocity = CGVector(dx: randLinVx, dy: randLinVy)
+        
+        self.addChild(mediumAsteroid)
+    }
+    
+    func spawnSmallAsteroid(x: CGFloat, y: CGFloat){
+
+        //set random sprite
+        let rand = Int(random()*3)+1
+        switch (rand){
+        case 1: smallAsteroid = SKSpriteNode(imageNamed: "SmallAsteroid1")
+        case 2: smallAsteroid = SKSpriteNode(imageNamed: "SmallAsteroid2")
+        default: smallAsteroid = SKSpriteNode(imageNamed: "SmallAsteroid3")
+        }
+        
+        //set position to that given in call
+        //      (location of medium asteroid death)
+        // +/- 15
+        let adjustedx = x + ((random() * 30) - 15)
+        let adjustedy = y + ((random() * 30) - 15)
+        
+        smallAsteroid.position = CGPoint(x: adjustedx, y: adjustedy)
+        smallAsteroid.zPosition = 1
+        smallAsteroid.size = CGSize(width: 30, height: 30)
+        smallAsteroid.physicsBody = SKPhysicsBody(circleOfRadius: 12)
+        smallAsteroid.physicsBody?.angularDamping = 0
+        smallAsteroid.physicsBody?.linearDamping = 0
+        
+        //give angular and linear velocity at default
+        //angular velocity between -0.5 and 0.5
+        let randAngV = random() - 0.5
+        //linear velocity from -15 to 15
+        let randLinVx = random() * 30 - 15
+        let randLinVy = random() * 30 - 15
+        
+        
+        smallAsteroid.physicsBody?.angularVelocity = randAngV
+        smallAsteroid.physicsBody?.velocity = CGVector(dx: randLinVx, dy: randLinVy)
+        
+        self.addChild(smallAsteroid)
+    }
+    
+    
+    
+    func random() -> CGFloat{
+        //return random number 0-1
+        return CGFloat(Float(arc4random()) / Float(UINT32_MAX))
     }
     
     func shootLaser(){
@@ -291,6 +406,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func shipHit(){
         // TODO
     }
+    
     
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */

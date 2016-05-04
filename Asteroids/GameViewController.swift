@@ -37,6 +37,8 @@ class GameViewController: UIViewController {
     override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
         return .Landscape
     }
+    
+    //override func supportedInterface Orientations() -> UIInterface.....
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

@@ -51,8 +51,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.backgroundColor = UIColor.blackColor();
         
         //Left Button
-        leftButton = SKShapeNode(rectOfSize: CGSize(width: 60, height: 70))
-        leftButton.position = CGPoint(x: self.frame.width*0.9-160, y: self.frame.height*0.2-30)
+        leftButton = SKShapeNode(rectOfSize: CGSize(width: 60, height: 100))
+        leftButton.position = CGPoint(x: self.frame.width*0.9-160, y: self.frame.height*0.2-20)
         leftButton.zPosition = 999
         leftButton.fillColor = UIColor.clearColor()
         leftButton.strokeColor = UIColor.redColor()
@@ -71,8 +71,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         
         //Right Button
-        rightButton = SKShapeNode(rectOfSize: CGSize(width: 60, height: 70))
-        rightButton.position = CGPoint(x: self.frame.width*0.9, y: self.frame.height*0.2-30)
+        rightButton = SKShapeNode(rectOfSize: CGSize(width: 60, height: 100))
+        rightButton.position = CGPoint(x: self.frame.width*0.9, y: self.frame.height*0.2-20)
         rightButton.zPosition = 999
         rightButton.fillColor = UIColor.clearColor()
         rightButton.strokeColor = UIColor.blueColor()

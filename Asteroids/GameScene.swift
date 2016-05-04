@@ -15,6 +15,7 @@ let laserCatagory: UInt32 = 1 << 1
 let largeAsteroidCatagory: UInt32 = 1 << 2
 let mediumAsteroidCatagory: UInt32 = 1 << 3
 let smallAsteroidCatagory: UInt32 = 1 << 4
+let asteroidCatagory: UInt32 = 1 << 5
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
@@ -32,6 +33,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var rightButton: SKShapeNode!
     var upButton:    SKShapeNode!
     var shootButton: SKShapeNode!
+    var resetButton: SKLabelNode!
     var upButtonPressed = false
     var leftButtonPressed = false
     var rightButtonPressed = false
@@ -47,8 +49,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // self.physicsBody = SKPhysicsBody(edgeLoopFromRect: self.frame)
         self.physicsBody?.contactTestBitMask = 0 //nothing bounces off of the edge, it will wrap instead
         self.backgroundColor = UIColor.blackColor();
-        
-        // TODO: Set up control boxes
         
         //Left Button
         leftButton = SKShapeNode(rectOfSize: CGSize(width: 40, height: 80))
@@ -78,7 +78,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         rightButton.strokeColor = UIColor.blueColor()
         rightButton.lineWidth = 3
         self.addChild(rightButton)
-
+        
         
         //Shoot Button
         shootButton = SKShapeNode(rectOfSize: CGSize(width: 120, height: 40))
@@ -89,8 +89,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         shootButton.lineWidth = 3
         self.addChild(shootButton)
         
+        resetButton = SKLabelNode(text: "reset")
+        resetButton.position = CGPoint(x: self.frame.midX, y: self.frame.minY + resetButton.frame.height / 2)
+        self.addChild(resetButton)
         
-        // TODO: Set up ship
+        setupGame()
+        
+    }
+
+    func setupGame(){
+        
         ship = SKSpriteNode(imageNamed: "Ship")
         ship.position = CGPoint(x: self.frame.width / 2, y: self.frame.height / 2)
         ship.zPosition = 10
@@ -107,16 +115,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //particle on ship
         particle = SKEmitterNode(fileNamed: "FireParticle.sks")
         particle!.targetNode = self
-            //particle position thinks ship is in top right when ship in center. fix by subtracting
+        //particle position thinks ship is in top right when ship in center. fix by subtracting
         particle.position = CGPoint(x: (ship.position.x - self.frame.width/2) - 20, y: (ship.position.y-self.frame.height/2))
         particle.particleBirthRate = 0
         ship.addChild(particle!)
-
-        // Set up timer
-        asteroidTimer = NSTimer.scheduledTimerWithTimeInterval(10, target: self, selector: "spawnLargeAsteroid", userInfo: nil, repeats: true)
         
+        // Set up timer
+        asteroidTimer = NSTimer.scheduledTimerWithTimeInterval(10, target: self, selector: #selector(GameScene.spawnLargeAsteroid), userInfo: nil, repeats: true)
     }
-
+    
+    func clearGame(){
+        asteroidTimer.invalidate()
+        ship.removeFromParent()
+        for node in self.children{
+            if node.name == "wrappable"{
+                node.removeFromParent()
+            }
+        }
+    }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         /* Called when a touch begins */
@@ -139,6 +155,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             else if rightButton.containsPoint(location){
                 rightButtonPressed = true
+            }
+            else if resetButton.containsPoint(location){
+                clearGame()
+                setupGame()
             }
             
         }
@@ -222,6 +242,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         largeAsteroid.physicsBody?.angularDamping = 0
         largeAsteroid.name = "wrappable"
         largeAsteroid.physicsBody?.linearDamping = 0
+        largeAsteroid.physicsBody?.categoryBitMask = asteroidCatagory
         
         //give angular and linear velocity at default
         //angular velocity between -0.5 and 0.5

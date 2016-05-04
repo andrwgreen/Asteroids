@@ -51,8 +51,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.backgroundColor = UIColor.blackColor();
         
         //Left Button
-        leftButton = SKShapeNode(rectOfSize: CGSize(width: 40, height: 80))
-        leftButton.position = CGPoint(x: self.frame.width*0.9-120, y: self.frame.height*0.2-20)
+        leftButton = SKShapeNode(rectOfSize: CGSize(width: 60, height: 70))
+        leftButton.position = CGPoint(x: self.frame.width*0.9-160, y: self.frame.height*0.2-30)
         leftButton.zPosition = 999
         leftButton.fillColor = UIColor.clearColor()
         leftButton.strokeColor = UIColor.redColor()
@@ -61,8 +61,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         
         //Up Button
-        upButton = SKShapeNode(rectOfSize: CGSize(width: 160, height: 40))
-        upButton.position = CGPoint(x: self.frame.width*0.9-60, y: self.frame.height*0.2)
+        upButton = SKShapeNode(rectOfSize: CGSize(width: 140, height: 60))
+        upButton.position = CGPoint(x: self.frame.width*0.9-80, y: self.frame.height*0.2)
         upButton.zPosition = 999
         upButton.fillColor = UIColor.clearColor()
         upButton.strokeColor = UIColor.whiteColor()
@@ -71,8 +71,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         
         //Right Button
-        rightButton = SKShapeNode(rectOfSize: CGSize(width: 40, height: 80))
-        rightButton.position = CGPoint(x: self.frame.width*0.9, y: self.frame.height*0.2-20)
+        rightButton = SKShapeNode(rectOfSize: CGSize(width: 60, height: 70))
+        rightButton.position = CGPoint(x: self.frame.width*0.9, y: self.frame.height*0.2-30)
         rightButton.zPosition = 999
         rightButton.fillColor = UIColor.clearColor()
         rightButton.strokeColor = UIColor.blueColor()
@@ -81,8 +81,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         
         //Shoot Button
-        shootButton = SKShapeNode(rectOfSize: CGSize(width: 120, height: 40))
-        shootButton.position = CGPoint(x: self.frame.width*0.15, y: self.frame.height*0.1)
+        shootButton = SKShapeNode(rectOfSize: CGSize(width: 100, height: 60))
+        shootButton.position = CGPoint(x: self.frame.width*0.15, y: self.frame.height*0.2)
         shootButton.zPosition = 999
         shootButton.fillColor = UIColor.clearColor()
         shootButton.strokeColor = UIColor.yellowColor()
@@ -133,6 +133,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
     }
+
+
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         /* Called when a touch begins */
@@ -143,12 +145,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             // TODO: Act on touches in control boxes
             if shootButton.containsPoint(location){
                 shootLaser()
-                runAction(SKAction.playSoundFileNamed("pew_final.wav", waitForCompletion: false))
+                //runAction(SKAction.playSoundFileNamed("pew_final.wav", waitForCompletion: false))
             }
             
             if upButton.containsPoint(location){
                 upButtonPressed = true
-                particle.particleBirthRate = 500
+                particle.particleBirthRate = 1000
+                particle.particlePositionRange.dy = 10
+                particle.particlePositionRange.dx = 2
             }
             if leftButton.containsPoint(location){
                 leftButtonPressed = true

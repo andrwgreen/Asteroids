@@ -35,6 +35,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var upButtonPressed = false
     var leftButtonPressed = false
     var rightButtonPressed = false
+    var asteroidTimer: NSTimer!
     
     var score = 0
     
@@ -111,9 +112,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         particle.particleBirthRate = 0
         ship.addChild(particle!)
 
-        
-
-
+        // Set up timer
+        asteroidTimer = NSTimer.scheduledTimerWithTimeInterval(10, target: self, selector: "spawnLargeAsteroid", userInfo: nil, repeats: true)
         
     }
 
@@ -220,6 +220,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         largeAsteroid.size = CGSize(width: 100, height: 100)
         largeAsteroid.physicsBody = SKPhysicsBody(circleOfRadius: 45)
         largeAsteroid.physicsBody?.angularDamping = 0
+        largeAsteroid.name = "wrappable"
         largeAsteroid.physicsBody?.linearDamping = 0
         
         //give angular and linear velocity at default

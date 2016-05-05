@@ -16,7 +16,6 @@
 		F0DC549B1CD2572E005EB3BD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F0DC54991CD2572E005EB3BD /* LaunchScreen.storyboard */; };
 		F0DC54A61CD2572E005EB3BD /* AsteroidsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0DC54A51CD2572E005EB3BD /* AsteroidsTests.swift */; };
 		F0DC54B11CD2572E005EB3BD /* AsteroidsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0DC54B01CD2572E005EB3BD /* AsteroidsUITests.swift */; };
-		F0F8D45F1CD9086B00212D2A /* pew_final.wav in Resources */ = {isa = PBXBuildFile; fileRef = F0F8D45E1CD9086B00212D2A /* pew_final.wav */; };
 		F5118A711CD444B500A2E0EB /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F5118A701CD444B500A2E0EB /* Default-568h@2x.png */; };
 		F54754F11CD45ABE00D66F58 /* FireParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = F54754F01CD45ABE00D66F58 /* FireParticle.sks */; };
 /* End PBXBuildFile section */
@@ -84,13 +83,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		F0714B4E1CD7D857009E336C /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Resources;
-			sourceTree = "<group>";
-		};
 		F0DC54801CD2572E005EB3BD = {
 			isa = PBXGroup;
 			children = (
@@ -223,7 +215,7 @@
 				TargetAttributes = {
 					F0DC54881CD2572E005EB3BD = {
 						CreatedOnToolsVersion = 7.3;
-						DevelopmentTeam = H9SXWJQ397;
+						DevelopmentTeam = L25TG78RCE;
 					};
 					F0DC54A01CD2572E005EB3BD = {
 						CreatedOnToolsVersion = 7.3;

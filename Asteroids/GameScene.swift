@@ -256,7 +256,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         largeAsteroid.position = CGPoint(x: randx, y: randy)
         largeAsteroid.zPosition = 1
         largeAsteroid.size = CGSize(width: 100, height: 100)
-        largeAsteroid.physicsBody = SKPhysicsBody(circleOfRadius: 45)
+        largeAsteroid.physicsBody = SKPhysicsBody(circleOfRadius: 40)
         largeAsteroid.name = "largeAsteroid"
         largeAsteroid.physicsBody?.angularDamping = 0
         largeAsteroid.physicsBody?.linearDamping = 0
@@ -296,7 +296,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         mediumAsteroid.position = CGPoint(x: adjustedx, y: adjustedy)
         mediumAsteroid.zPosition = 1
         mediumAsteroid.size = CGSize(width: 60, height: 60)
-        mediumAsteroid.physicsBody = SKPhysicsBody(circleOfRadius: 30)
+        mediumAsteroid.physicsBody = SKPhysicsBody(circleOfRadius: 22)
         mediumAsteroid.name = "mediumAsteroid"
         mediumAsteroid.physicsBody?.angularDamping = 0
         mediumAsteroid.physicsBody?.linearDamping = 0
@@ -442,8 +442,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func didBeginContact(contact: SKPhysicsContact) {
         
-        print("bodyA:  \(contact.bodyA.categoryBitMask)")
-        print("bodyB:  \(contact.bodyB.categoryBitMask)")
+//        print("bodyA:  \(contact.bodyA.categoryBitMask)")
+//        print("bodyB:  \(contact.bodyB.categoryBitMask)")
         
         if asteroidDidHitShip(contact){
             shipDestroyed()
@@ -456,45 +456,75 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func laserHitAsteroid(contact: SKPhysicsContact){
         var asteroidName: String!
         var asteroidLocation: CGPoint!
+        var asteroid: SKNode!
         
-        //determine bodyA and bodyB
-        //set asteroid name, location, then remove asteroid and laser
-        if (contact.bodyA.node!.name == "laser"){
-            asteroidName = contact.bodyB.node?.name
-            asteroidLocation = contact.bodyB.node?.position
-        } else {
-            asteroidName = contact.bodyA.node?.name
-            asteroidLocation = contact.bodyA.node?.position
-        }
+        //actions
         
-        //remove Asteroid and Laser
-        contact.bodyA.node?.removeFromParent()
-        contact.bodyB.node?.removeFromParent()
+        let shrinkAction = SKAction.scaleBy(0, duration: 1.25)
+        let fadeAction = SKAction.fadeOutWithDuration(0.75)
+        let removePhysicsAction = SKAction.runBlock({
+            asteroid.physicsBody = nil
+        })
+        let removeNodeAction = SKAction.runBlock({
+            asteroid.removeFromParent()
+        })
         
-        //add smaller asteroid if necessary
+        let goAwayAction = SKAction.group([shrinkAction, fadeAction])
         
-        if (asteroidName == "largeAsteroid"){
-            //spawn 2 medium asteroids
-            spawnMediumAsteroid(asteroidLocation.x, y: asteroidLocation.y)
-            spawnMediumAsteroid(asteroidLocation.x, y: asteroidLocation.y)
-            
-            //update score
-            updateScore(1)
-        } else if (asteroidName == "mediumAsteroid"){
-            //spawn 4 small asteroids
-            spawnSmallAsteroid(asteroidLocation.x, y: asteroidLocation.y)
-            spawnSmallAsteroid(asteroidLocation.x, y: asteroidLocation.y)
-            spawnSmallAsteroid(asteroidLocation.x, y: asteroidLocation.y)
-            spawnSmallAsteroid(asteroidLocation.x, y: asteroidLocation.y)
-            //update score
-            updateScore(2)
-        } else if (asteroidName == "smallAsteroid"){
-            //update score
-            updateScore(4)
-        }
+        let explodeAction = SKAction.sequence([removePhysicsAction, goAwayAction, removeNodeAction])
         
+        //verify not nil
+        if (contact.bodyA.node != nil && contact.bodyB.node != nil){
+        
+            //determine bodyA and bodyB
+            //set asteroid name, location, then remove asteroid and laser
+            if (contact.bodyA.node!.name == "laser"){
+                asteroid = contact.bodyB.node
+                asteroidName = asteroid.name
+                asteroidLocation = asteroid.position
+                
+                //asteroid explode
+                asteroid.runAction(explodeAction)
+                
+                //remove laser
+                contact.bodyA.node?.removeFromParent()
+            } else {
+                asteroid = contact.bodyA.node
+                asteroidName = asteroid.name
+                asteroidLocation = asteroid.position
+                
+                //asteroid explode
+                asteroid!.runAction(explodeAction)
+                
+                //remove laser
+                contact.bodyB.node?.removeFromParent()
+            }
 
-        
+            
+            //add smaller asteroid if one and update score
+            if (asteroidName == "largeAsteroid"){
+                //spawn 2 medium asteroids
+                spawnMediumAsteroid(asteroidLocation.x, y: asteroidLocation.y)
+                spawnMediumAsteroid(asteroidLocation.x, y: asteroidLocation.y)
+                
+                //update score
+                updateScore(1)
+                
+            } else if (asteroidName == "mediumAsteroid"){
+                //spawn 4 small asteroids
+                spawnSmallAsteroid(asteroidLocation.x, y: asteroidLocation.y)
+                spawnSmallAsteroid(asteroidLocation.x, y: asteroidLocation.y)
+                spawnSmallAsteroid(asteroidLocation.x, y: asteroidLocation.y)
+                spawnSmallAsteroid(asteroidLocation.x, y: asteroidLocation.y)
+                
+                //update score
+                updateScore(2)
+                
+            } else if (asteroidName == "smallAsteroid"){
+                //update score
+                updateScore(4)
+            }
+        } 
     }
 
     

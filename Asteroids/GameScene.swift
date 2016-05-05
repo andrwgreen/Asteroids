@@ -29,10 +29,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var level = 1
     
     //Set up Buttons
-    var leftButton:  SKShapeNode!
-    var rightButton: SKShapeNode!
-    var upButton:    SKShapeNode!
-    var shootButton: SKShapeNode!
+    var leftButton:  SKSpriteNode!
+    var rightButton: SKSpriteNode!
+    var upButton:    SKSpriteNode!
+    var shootButton: SKSpriteNode!
     var resetButton: SKLabelNode!
     var upButtonPressed = false
     var leftButtonPressed = false
@@ -51,42 +51,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.backgroundColor = UIColor.blackColor();
         
         //Left Button
-        leftButton = SKShapeNode(rectOfSize: CGSize(width: 60, height: 70))
-        leftButton.position = CGPoint(x: self.frame.width*0.9-160, y: self.frame.height*0.2-30)
+        leftButton = SKSpriteNode(texture: SKTexture(imageNamed: "RotateLeft"), size: CGSize(width: 60, height: 100))
+        leftButton.position = CGPoint(x: self.frame.width*0.9-160, y: self.frame.height*0.2-20)
         leftButton.zPosition = 999
-        leftButton.fillColor = UIColor.clearColor()
-        leftButton.strokeColor = UIColor.redColor()
-        leftButton.lineWidth = 3
         self.addChild(leftButton)
         
         
         //Up Button
-        upButton = SKShapeNode(rectOfSize: CGSize(width: 140, height: 60))
-        upButton.position = CGPoint(x: self.frame.width*0.9-80, y: self.frame.height*0.2)
+        upButton = SKSpriteNode(texture: SKTexture(imageNamed: "Up"), size: CGSize(width: 140, height: 60))
+        upButton.position = CGPoint(x: self.frame.width*0.9-80, y: self.frame.height*0.2+20)
         upButton.zPosition = 999
-        upButton.fillColor = UIColor.clearColor()
-        upButton.strokeColor = UIColor.whiteColor()
-        upButton.lineWidth = 3
         self.addChild(upButton)
         
         
         //Right Button
-        rightButton = SKShapeNode(rectOfSize: CGSize(width: 60, height: 70))
-        rightButton.position = CGPoint(x: self.frame.width*0.9, y: self.frame.height*0.2-30)
+        rightButton = SKSpriteNode(texture: SKTexture(imageNamed: "RotateRight"), size: CGSize(width: 60, height: 100))
+        rightButton.position = CGPoint(x: self.frame.width*0.9, y: self.frame.height*0.2-20)
         rightButton.zPosition = 999
-        rightButton.fillColor = UIColor.clearColor()
-        rightButton.strokeColor = UIColor.blueColor()
-        rightButton.lineWidth = 3
         self.addChild(rightButton)
         
         
         //Shoot Button
-        shootButton = SKShapeNode(rectOfSize: CGSize(width: 100, height: 60))
+        shootButton = SKSpriteNode(texture: SKTexture(imageNamed: "Fire"), size: CGSize(width: 120, height: 60))
         shootButton.position = CGPoint(x: self.frame.width*0.15, y: self.frame.height*0.2)
         shootButton.zPosition = 999
-        shootButton.fillColor = UIColor.clearColor()
-        shootButton.strokeColor = UIColor.yellowColor()
-        shootButton.lineWidth = 3
         self.addChild(shootButton)
         
         resetButton = SKLabelNode(text: "reset")

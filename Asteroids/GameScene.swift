@@ -25,6 +25,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var mediumAsteroid: SKSpriteNode!
     var smallAsteroid: SKSpriteNode!
     var scoreLabel: SKLabelNode!
+    var gameOverLabel: SKLabelNode!
     var particle: SKEmitterNode!
     var level = 1
     
@@ -41,6 +42,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var score = 0
     var gameOver = false
+    var center = CGPoint(x: 0, y: 0)
     
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */
@@ -50,6 +52,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // self.physicsBody = SKPhysicsBody(edgeLoopFromRect: self.frame)
         self.physicsBody?.contactTestBitMask = 0 //nothing bounces off of the edge, it will wrap instead
         self.backgroundColor = UIColor.blackColor();
+        center = CGPointMake(self.frame.width / 2, self.frame.height/2)
         
         setupGame()
         
@@ -96,7 +99,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(resetButton)
         
         ship = SKSpriteNode(imageNamed: "Ship")
-        ship.position = CGPoint(x: self.frame.width / 2, y: self.frame.height / 2)
+        ship.position = center
         ship.zPosition = 10
         ship.zRotation = CGFloat(M_PI) / 2
         ship.size = CGSize(width: 40, height: 40)
@@ -139,6 +142,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         for node in self.children{
             if node.name != "UIElement"{
                 node.removeFromParent()
+                gameOverLabel.removeFromParent()
             }
         }
     }
@@ -218,7 +222,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         particle.particleBirthRate = 0
     }
-    
+
 
     
     func spawnLargeAsteroid(){
@@ -432,7 +436,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func shotHit(){
-        // TODO
+        //
     }
     
     func updateScore(valueToAdd: Int){
@@ -441,11 +445,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func shipHit(){
-        // TODO
+        // TODO: Add more than one life after the end of the semester
+        // All of this will go into that function
+        gameEnd()
+        
+    }
+    
+    func gameEnd(){
         leftButton.removeFromParent()
         rightButton.removeFromParent()
         upButton.removeFromParent()
         shootButton.removeFromParent()
+        
+        // gmae over label
+        gameOverLabel = SKLabelNode(text: "What a Loser!")
+        gameOverLabel.fontName = "Futura Medium"
+        gameOverLabel.position = center
+        gameOverLabel.name = "UIElement"
+        self.addChild(gameOverLabel)
         gameOver = true
     }
     

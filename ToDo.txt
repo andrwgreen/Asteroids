@@ -1,0 +1,15 @@
+Asteroids to do
+
+- [ ] Collision of bullets with asteroids spawn new asteroid / score
+- [ ] collision of ship with asteroid = death
+- [ ] 	text “you lose” + all asteroids jacob thurman
+- [ ] Main menu
+- [ ] Game over screen
+- [ ] Artwork
+- [ ] 	Launch screen
+- [ ] 	icon
+- [ ] 	fix asteroid strokes
+- [ ] fix wrapping (contact did end)
+- [ ] pause button
+- [ ] remove node count & fps
+

@@ -110,6 +110,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // Set up timer
         asteroidTimer = NSTimer.scheduledTimerWithTimeInterval(10, target: self, selector: #selector(GameScene.spawnLargeAsteroid), userInfo: nil, repeats: true)
+        
+        
+        scoreLabel = SKLabelNode(text: "\(score)")
+        scoreLabel.horizontalAlignmentMode = .Left
+        scoreLabel.fontSize = 18
+        scoreLabel.fontName = "Futura Medium"
+        scoreLabel.position = CGPoint(x: 10, y: self.frame.height - 25)
+        scoreLabel.zPosition = 999
+        self.addChild(scoreLabel)
+        
+        
     }
     
     func clearGame(){

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F08E17B81CDB0D5C009481C4 /* pew_final.wav in Resources */ = {isa = PBXBuildFile; fileRef = F0F8D45E1CD9086B00212D2A /* pew_final.wav */; };
 		F0DC548D1CD2572E005EB3BD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0DC548C1CD2572E005EB3BD /* AppDelegate.swift */; };
 		F0DC548F1CD2572E005EB3BD /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = F0DC548E1CD2572E005EB3BD /* GameScene.sks */; };
 		F0DC54911CD2572E005EB3BD /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0DC54901CD2572E005EB3BD /* GameScene.swift */; };
@@ -115,6 +116,7 @@
 				F54754F01CD45ABE00D66F58 /* FireParticle.sks */,
 				F0DC54921CD2572E005EB3BD /* GameViewController.swift */,
 				F0DC54941CD2572E005EB3BD /* Main.storyboard */,
+				F0F8D45E1CD9086B00212D2A /* pew_final.wav */,
 				F0F8D4601CD9087700212D2A /* Sounds */,
 				F0DC54971CD2572E005EB3BD /* Assets.xcassets */,
 				F0DC54991CD2572E005EB3BD /* LaunchScreen.storyboard */,
@@ -144,7 +146,6 @@
 		F0F8D4601CD9087700212D2A /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
-				F0F8D45E1CD9086B00212D2A /* pew_final.wav */,
 			);
 			name = Sounds;
 			sourceTree = "<group>";
@@ -262,6 +263,7 @@
 				F0DC54981CD2572E005EB3BD /* Assets.xcassets in Resources */,
 				F5118A711CD444B500A2E0EB /* Default-568h@2x.png in Resources */,
 				F0DC54961CD2572E005EB3BD /* Main.storyboard in Resources */,
+				F08E17B81CDB0D5C009481C4 /* pew_final.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

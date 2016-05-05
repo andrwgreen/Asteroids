@@ -399,12 +399,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ship.physicsBody?.velocity.dy += yComponent
     }
     
+    func asteroidDidHitShip(contact: SKPhysicsContact) -> Bool{
+        if (contact.bodyA.categoryBitMask == shipCatagory && contact.bodyB.categoryBitMask == asteroidCatagory) ||
+           (contact.bodyA.categoryBitMask == asteroidCatagory && contact.bodyB.categoryBitMask == shipCatagory){
+            return true
+        }
+        return false
+    }
+    
+    func didBeginContact(contact: SKPhysicsContact) {
+        if asteroidDidHitShip(contact){
+            shipHit()
+        }
+    }
+    
     func shotHit(){
         // TODO
     }
     
     func shipHit(){
         // TODO
+        leftButton.removeFromParent()
+        rightButton.removeFromParent()
+        upButton.removeFromParent()
+        shootButton.removeFromParent()
     }
     
     

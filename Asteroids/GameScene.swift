@@ -40,20 +40,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var asteroidTimer: NSTimer!
     
     var score = 0
+    var gameOver = false
     
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */
         self.scaleMode = SKSceneScaleMode.ResizeFill
         self.physicsWorld.gravity = CGVector(dx: 0, dy: 0)
-        // self.physicsWorld.contactDelegate = self  // This line is important only for physicsContactDelegate
+        self.physicsWorld.contactDelegate = self  // This line is important only for physicsContactDelegate
         // self.physicsBody = SKPhysicsBody(edgeLoopFromRect: self.frame)
         self.physicsBody?.contactTestBitMask = 0 //nothing bounces off of the edge, it will wrap instead
         self.backgroundColor = UIColor.blackColor();
+        
+        setupGame()
+        
+    }
+
+    func setupGame(){
+        
+        gameOver = false
         
         //Left Button
         leftButton = SKSpriteNode(texture: SKTexture(imageNamed: "RotateLeft"), size: CGSize(width: 60, height: 100))
         leftButton.position = CGPoint(x: self.frame.width*0.9-160, y: self.frame.height*0.2-20)
         leftButton.zPosition = 999
+        leftButton.name = "UIElement"
         self.addChild(leftButton)
         
         
@@ -61,6 +71,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         upButton = SKSpriteNode(texture: SKTexture(imageNamed: "Up"), size: CGSize(width: 140, height: 60))
         upButton.position = CGPoint(x: self.frame.width*0.9-80, y: self.frame.height*0.2+20)
         upButton.zPosition = 999
+        upButton.name = "UIElement"
         self.addChild(upButton)
         
         
@@ -68,6 +79,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         rightButton = SKSpriteNode(texture: SKTexture(imageNamed: "RotateRight"), size: CGSize(width: 60, height: 100))
         rightButton.position = CGPoint(x: self.frame.width*0.9, y: self.frame.height*0.2-20)
         rightButton.zPosition = 999
+        rightButton.name = "UIElement"
         self.addChild(rightButton)
         
         
@@ -75,17 +87,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         shootButton = SKSpriteNode(texture: SKTexture(imageNamed: "Fire"), size: CGSize(width: 120, height: 60))
         shootButton.position = CGPoint(x: self.frame.width*0.15, y: self.frame.height*0.2)
         shootButton.zPosition = 999
+        shootButton.name = "UIElement"
         self.addChild(shootButton)
         
         resetButton = SKLabelNode(text: "reset")
         resetButton.position = CGPoint(x: self.frame.midX, y: self.frame.minY + resetButton.frame.height / 2)
+        resetButton.fontName = "Futura Medium"
         self.addChild(resetButton)
-        
-        setupGame()
-        
-    }
-
-    func setupGame(){
         
         ship = SKSpriteNode(imageNamed: "Ship")
         ship.position = CGPoint(x: self.frame.width / 2, y: self.frame.height / 2)
@@ -96,8 +104,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ship.physicsBody?.angularDamping = 1
         ship.physicsBody?.linearDamping = 0
         ship.physicsBody?.categoryBitMask = shipCatagory
-        ship.physicsBody?.contactTestBitMask = 0 // collides with nothing at the moment CHANGE THIS LATER
-        ship.name = "wrappable" // Used when checking all children for wrapping
+        ship.physicsBody?.contactTestBitMask = asteroidCatagory
+        ship.name = "ship" // Used when checking all children for wrapping
         self.addChild(ship)
         
         //particle on ship
@@ -107,6 +115,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         particle.position = CGPoint(x: (ship.position.x - self.frame.width/2) - 20, y: (ship.position.y-self.frame.height/2))
         particle.particleBirthRate = 0
         ship.addChild(particle!)
+        
+        spawnLargeAsteroid()
         
         // Set up timer
         asteroidTimer = NSTimer.scheduledTimerWithTimeInterval(10, target: self, selector: #selector(GameScene.spawnLargeAsteroid), userInfo: nil, repeats: true)
@@ -127,7 +137,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         asteroidTimer.invalidate()
         ship.removeFromParent()
         for node in self.children{
-            if node.name == "wrappable"{
+            if node.name != "UIElement"{
                 node.removeFromParent()
             }
         }
@@ -140,26 +150,27 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         for touch in touches {
             let location = touch.locationInNode(self)
-            
-            // TODO: Act on touches in control boxes
-            if shootButton.containsPoint(location){
-                shootLaser()
-                //runAction(SKAction.playSoundFileNamed("pew_final.wav", waitForCompletion: false))
+            if gameOver == false{
+                // TODO: Act on touches in control boxes
+                if shootButton.containsPoint(location){
+                    shootLaser()
+                    //runAction(SKAction.playSoundFileNamed("pew_final.wav", waitForCompletion: false))
+                }
+                
+                if upButton.containsPoint(location){
+                    upButtonPressed = true
+                    particle.particleBirthRate = 1000
+                    particle.particlePositionRange.dy = 10
+                    particle.particlePositionRange.dx = 2
+                }
+                if leftButton.containsPoint(location){
+                    leftButtonPressed = true
+                }
+                else if rightButton.containsPoint(location){
+                    rightButtonPressed = true
+                }
             }
-            
-            if upButton.containsPoint(location){
-                upButtonPressed = true
-                particle.particleBirthRate = 1000
-                particle.particlePositionRange.dy = 10
-                particle.particlePositionRange.dx = 2
-            }
-            if leftButton.containsPoint(location){
-                leftButtonPressed = true
-            }
-            else if rightButton.containsPoint(location){
-                rightButtonPressed = true
-            }
-            else if resetButton.containsPoint(location){
+            if resetButton.containsPoint(location){
                 clearGame()
                 setupGame()
             }
@@ -181,19 +192,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             // If any button contains a touch point, then it is still being
             // pressed, so the button action will still be applied at the next frame
             
-            if upButton.containsPoint(location){
-                upButtonPressed = true
-                particle.particleBirthRate = 500
-                
-            }
-            else{
-                particle.particleBirthRate = 0
-            }
-            if leftButton.containsPoint(location){
-                leftButtonPressed = true
-            }
-            else if rightButton.containsPoint(location){
-                rightButtonPressed = true
+            if !gameOver{
+                if upButton.containsPoint(location){
+                    upButtonPressed = true
+                    particle.particleBirthRate = 500
+                    
+                }
+                else{
+                    particle.particleBirthRate = 0
+                }
+                if leftButton.containsPoint(location){
+                    leftButtonPressed = true
+                }
+                else if rightButton.containsPoint(location){
+                    rightButtonPressed = true
+                }
             }
         }
     }
@@ -206,8 +219,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         particle.particleBirthRate = 0
     }
     
-    // Will need to be updated with bitmask stuff and wrapping stuff
-    // asteroid.name = "wrappable" so that wrapping automagically works
+
+    
     func spawnLargeAsteroid(){
         
         //set random sprite
@@ -228,8 +241,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         //check if spawn is within buffer of ship. if so, redo
        repeat{
-                
-                print("spawn not good. redo")
+
                 //set spawn location for asteroid (any x, top 90% y)
                 randx = random() * self.frame.width
                 randy = random() * 0.9 * self.frame.height + 0.1 * self.frame.height
@@ -243,9 +255,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         largeAsteroid.size = CGSize(width: 100, height: 100)
         largeAsteroid.physicsBody = SKPhysicsBody(circleOfRadius: 45)
         largeAsteroid.physicsBody?.angularDamping = 0
-        largeAsteroid.name = "wrappable"
+        largeAsteroid.name = "largeAsteroid"
         largeAsteroid.physicsBody?.linearDamping = 0
         largeAsteroid.physicsBody?.categoryBitMask = asteroidCatagory
+        largeAsteroid.physicsBody?.contactTestBitMask = shipCatagory
         
         //give angular and linear velocity at default
         //angular velocity between -0.5 and 0.5
@@ -283,6 +296,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         mediumAsteroid.physicsBody = SKPhysicsBody(circleOfRadius: 30)
         mediumAsteroid.physicsBody?.angularDamping = 0
         mediumAsteroid.physicsBody?.linearDamping = 0
+        mediumAsteroid.name = "mediumAsteroid"
+        mediumAsteroid.physicsBody?.contactTestBitMask = shipCatagory | laserCatagory
         
         //give angular and linear velocity at default
         //angular velocity between -0.5 and 0.5
@@ -320,6 +335,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         smallAsteroid.physicsBody = SKPhysicsBody(circleOfRadius: 12)
         smallAsteroid.physicsBody?.angularDamping = 0
         smallAsteroid.physicsBody?.linearDamping = 0
+        smallAsteroid.physicsBody?.contactTestBitMask = shipCatagory | laserCatagory
+        smallAsteroid.name = "smallAsteroid"
         
         //give angular and linear velocity at default
         //angular velocity between -0.5 and 0.5
@@ -349,7 +366,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         laser.fillColor = UIColor.whiteColor()
         laser.position = offsetFromShip(ship.frame.height / 2)
         laser.physicsBody = SKPhysicsBody(circleOfRadius: 2)
-        laser.name = "wrappable" // Used for wrapping
+        laser.physicsBody?.contactTestBitMask = asteroidCatagory
+        laser.name = "laser"
         
         let xComponent = cos(ship.zRotation) * shotVelocity
         let yComponent = sin(ship.zRotation) * shotVelocity
@@ -398,12 +416,37 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ship.physicsBody?.velocity.dy += yComponent
     }
     
+    func asteroidDidHitShip(contact: SKPhysicsContact) -> Bool{
+        
+        if (contact.bodyA.categoryBitMask == shipCatagory && contact.bodyB.categoryBitMask == asteroidCatagory) ||
+           (contact.bodyA.categoryBitMask == asteroidCatagory && contact.bodyB.categoryBitMask == shipCatagory){
+            return true
+        }
+        return false
+    }
+    
+    func didBeginContact(contact: SKPhysicsContact) {
+        if asteroidDidHitShip(contact){
+            shipHit()
+        }
+    }
+    
     func shotHit(){
         // TODO
     }
     
+    func updateScore(valueToAdd: Int){
+//        score += valueToAdd
+//        scoreLabel.text = "\(score)"
+    }
+    
     func shipHit(){
         // TODO
+        leftButton.removeFromParent()
+        rightButton.removeFromParent()
+        upButton.removeFromParent()
+        shootButton.removeFromParent()
+        gameOver = true
     }
     
     
@@ -427,7 +470,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         for node in self.children{
             
-            if node.name == "wrappable"{
+            if node.name != "UIElement"{
                 
                 if node.position.x < self.frame.minX{
                     node.position.x = self.frame.maxX

@@ -56,6 +56,7 @@
 		F0F8D45E1CD9086B00212D2A /* pew_final.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = pew_final.wav; sourceTree = "<group>"; };
 		F5118A701CD444B500A2E0EB /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		F54754F01CD45ABE00D66F58 /* FireParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = FireParticle.sks; sourceTree = "<group>"; };
+		F5CC3E671CDB0AC100B7CD05 /* ToDo.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ToDo.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,6 +108,7 @@
 		F0DC548B1CD2572E005EB3BD /* Asteroids */ = {
 			isa = PBXGroup;
 			children = (
+				F5CC3E671CDB0AC100B7CD05 /* ToDo.txt */,
 				F0DC548C1CD2572E005EB3BD /* AppDelegate.swift */,
 				F0DC548E1CD2572E005EB3BD /* GameScene.sks */,
 				F0DC54901CD2572E005EB3BD /* GameScene.swift */,

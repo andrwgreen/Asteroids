@@ -10,12 +10,9 @@ import SpriteKit
 
 // TODO: Bitmask stuff here
 
-let shipCatagory: UInt32 = 1 << 0
-let laserCatagory: UInt32 = 1 << 1
-let largeAsteroidCatagory: UInt32 = 1 << 2
-let mediumAsteroidCatagory: UInt32 = 1 << 3
-let smallAsteroidCatagory: UInt32 = 1 << 4
-let asteroidCatagory: UInt32 = 1 << 5
+let shipCatagory:     UInt32 = 1 << 0
+let laserCatagory:    UInt32 = 1 << 1
+let asteroidCatagory: UInt32 = 1 << 2
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
@@ -138,6 +135,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func clearGame(){
         asteroidTimer.invalidate()
+        score = 0
+        scoreLabel.text = "\(score)"
         ship.removeFromParent()
         for node in self.children{
             if node.name != "UIElement"{
@@ -258,8 +257,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         largeAsteroid.zPosition = 1
         largeAsteroid.size = CGSize(width: 100, height: 100)
         largeAsteroid.physicsBody = SKPhysicsBody(circleOfRadius: 45)
-        largeAsteroid.physicsBody?.angularDamping = 0
         largeAsteroid.name = "largeAsteroid"
+        largeAsteroid.physicsBody?.angularDamping = 0
         largeAsteroid.physicsBody?.linearDamping = 0
         largeAsteroid.physicsBody?.categoryBitMask = asteroidCatagory
         largeAsteroid.physicsBody?.contactTestBitMask = shipCatagory
@@ -298,9 +297,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         mediumAsteroid.zPosition = 1
         mediumAsteroid.size = CGSize(width: 60, height: 60)
         mediumAsteroid.physicsBody = SKPhysicsBody(circleOfRadius: 30)
+        mediumAsteroid.name = "mediumAsteroid"
         mediumAsteroid.physicsBody?.angularDamping = 0
         mediumAsteroid.physicsBody?.linearDamping = 0
-        mediumAsteroid.name = "mediumAsteroid"
+        mediumAsteroid.physicsBody?.categoryBitMask = asteroidCatagory
         mediumAsteroid.physicsBody?.contactTestBitMask = shipCatagory | laserCatagory
         
         //give angular and linear velocity at default
@@ -337,10 +337,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         smallAsteroid.zPosition = 1
         smallAsteroid.size = CGSize(width: 30, height: 30)
         smallAsteroid.physicsBody = SKPhysicsBody(circleOfRadius: 12)
+        smallAsteroid.name = "smallAsteroid"
         smallAsteroid.physicsBody?.angularDamping = 0
         smallAsteroid.physicsBody?.linearDamping = 0
+        smallAsteroid.physicsBody?.categoryBitMask = asteroidCatagory
         smallAsteroid.physicsBody?.contactTestBitMask = shipCatagory | laserCatagory
-        smallAsteroid.name = "smallAsteroid"
         
         //give angular and linear velocity at default
         //angular velocity between -0.5 and 0.5
@@ -370,6 +371,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         laser.fillColor = UIColor.whiteColor()
         laser.position = offsetFromShip(ship.frame.height / 2)
         laser.physicsBody = SKPhysicsBody(circleOfRadius: 2)
+        laser.physicsBody?.categoryBitMask = laserCatagory
         laser.physicsBody?.contactTestBitMask = asteroidCatagory
         laser.name = "laser"
         
@@ -429,22 +431,75 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         return false
     }
     
+    func laserDidHitAsteroid(contact: SKPhysicsContact) -> Bool{
+
+        if (contact.bodyA.categoryBitMask == laserCatagory && contact.bodyB.categoryBitMask == asteroidCatagory) ||
+            (contact.bodyA.categoryBitMask == asteroidCatagory && contact.bodyB.categoryBitMask == laserCatagory){
+            return true
+        }
+        return false
+    }
+    
     func didBeginContact(contact: SKPhysicsContact) {
         if asteroidDidHitShip(contact){
-            shipHit()
+            shipDestroyed()
+        }
+        if laserDidHitAsteroid(contact){
+            laserHitAsteroid(contact)
         }
     }
     
-    func shotHit(){
-        //
+    func laserHitAsteroid(contact: SKPhysicsContact){
+        var asteroidName: String!
+        var asteroidLocation: CGPoint!
+        
+        //determine bodyA and bodyB
+        //set asteroid name, location, then remove asteroid and laser
+        if (contact.bodyA.node!.name == "laser"){
+            asteroidName = contact.bodyB.node?.name
+            asteroidLocation = contact.bodyB.node?.position
+            removeAsteroidAndLaser(contact.bodyB.node!, laser: contact.bodyA.node!)
+        } else {
+            asteroidName = contact.bodyA.node?.name
+            asteroidLocation = contact.bodyA.node?.position
+            removeAsteroidAndLaser(contact.bodyA.node!, laser: contact.bodyB.node!)
+        }
+        
+        //add smaller asteroid if necessary
+        
+        if (asteroidName == "largeAsteroid"){
+            //spawn 2 medium asteroids
+            spawnMediumAsteroid(asteroidLocation.x, y: asteroidLocation.y)
+            spawnMediumAsteroid(asteroidLocation.x, y: asteroidLocation.y)
+            
+            //update score
+            updateScore(1)
+        } else if (asteroidName == "mediumAsteroid"){
+            //spawn 4 small asteroids
+            spawnSmallAsteroid(asteroidLocation.x, y: asteroidLocation.y)
+            spawnSmallAsteroid(asteroidLocation.x, y: asteroidLocation.y)
+            spawnSmallAsteroid(asteroidLocation.x, y: asteroidLocation.y)
+            spawnSmallAsteroid(asteroidLocation.x, y: asteroidLocation.y)
+            //update score
+            updateScore(1)
+        } else if (asteroidName == "smallAsteroid"){
+            //update score
+            updateScore(1)
+        }
+        
+    }
+    
+    func removeAsteroidAndLaser(asteroid: SKNode, laser: SKNode){
+        laser.removeFromParent()
+        asteroid.removeFromParent()
     }
     
     func updateScore(valueToAdd: Int){
-//        score += valueToAdd
-//        scoreLabel.text = "\(score)"
+        score += valueToAdd
+        scoreLabel.text = "\(score)"
     }
     
-    func shipHit(){
+    func shipDestroyed(){
         // TODO: Add more than one life after the end of the semester
         // All of this will go into that function
         gameEnd()

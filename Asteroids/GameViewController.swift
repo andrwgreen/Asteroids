@@ -38,8 +38,6 @@ class GameViewController: UIViewController {
         return .Landscape
     }
     
-    //override func supportedInterface Orientations() -> UIInterface.....
-
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Release any cached data, images, etc that aren't in use.

@@ -305,7 +305,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         mediumAsteroid.position = CGPoint(x: adjustedx, y: adjustedy)
         mediumAsteroid.zPosition = 1
         mediumAsteroid.size = CGSize(width: 60, height: 60)
-        mediumAsteroid.physicsBody = SKPhysicsBody(circleOfRadius: 22)
+        mediumAsteroid.physicsBody = SKPhysicsBody(circleOfRadius: 24)
         mediumAsteroid.name = "mediumAsteroid"
         mediumAsteroid.physicsBody?.angularDamping = 0
         mediumAsteroid.physicsBody?.linearDamping = 0

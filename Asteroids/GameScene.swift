@@ -545,9 +545,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         rightButton.removeFromParent()
         upButton.removeFromParent()
         shootButton.removeFromParent()
+        asteroidTimer.invalidate()
         
         // gmae over label
-        gameOverLabel = SKLabelNode(text: "What a Loser!")
+        gameOverLabel = SKLabelNode(text: "Game Over!")
         gameOverLabel.fontName = "Futura Medium"
         gameOverLabel.position = center
         gameOverLabel.name = "UIElement"

@@ -392,6 +392,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         self.addChild(laser)
         
+        //Laser lifetime: t = d/v
+        // where t = time
+        //       d = self.frame.height
+        //       v = shot velocity (200)
     }
     
     // Takes a vector magnitude (CGFloat) and returns a CGPoint based on the zRotation of the
@@ -616,7 +620,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         })
         
         
-        let gameOverAction = SKAction.sequence([removePhysicsAction, goAwayAction, gameOverLabelAction, delayAction, playAgainButtonAction, changeAsteroidsToJTAction, removeNodeAction])
+        let gameOverAction = SKAction.sequence([removePhysicsAction, goAwayAction, gameOverLabelAction, delayAction, playAgainButtonAction, /*changeAsteroidsToJTAction, */removeNodeAction])
         
         
         self.ship.runAction(gameOverAction)

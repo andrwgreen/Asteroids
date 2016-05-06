@@ -606,21 +606,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     child.texture = SKTexture(imageNamed: "JThurman")
                 }
             }
-//                    let thurman = SKSpriteNode(imageNamed: "JThurman")
-//                    thurman.position = node.position
-//                    thurman.zPosition = node.zPosition
-//                    thurman.size = node.frame.size
-//                    thurman.name = node.name
-//                    thurman.physicsBody = node.physicsBody
-//                    thurman.physicsBody?.angularDamping = node.physicsBody!.angularDamping
-//                    thurman.physicsBody?.linearDamping = node.physicsBody!.linearDamping
-//                    thurman.physicsBody?.categoryBitMask = node.physicsBody!.categoryBitMask
-//                    thurman.physicsBody!.contactTestBitMask = node.physicsBody!.contactTestBitMask
-//                    thurman.physicsBody?.angularVelocity = node.physicsBody!.angularVelocity
-//                    thurman.physicsBody?.velocity = node.physicsBody!.velocity
-//                    
-//                    node.removeFromParent()
-
         })
         
         

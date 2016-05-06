@@ -32,6 +32,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var upButton:    SKSpriteNode!
     var shootButton: SKSpriteNode!
     var resetButton: SKLabelNode!
+    var playAgainButton: SKLabelNode!
     var upButtonPressed = false
     var leftButtonPressed = false
     var rightButtonPressed = false
@@ -142,6 +143,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if node.name != "UIElement"{
                 node.removeFromParent()
                 gameOverLabel.removeFromParent()
+                playAgainButton.removeFromParent()
             }
         }
     }
@@ -176,6 +178,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if resetButton.containsPoint(location){
                 clearGame()
                 setupGame()
+            }
+            if playAgainButton != nil{
+                if playAgainButton.containsPoint(location){
+                    clearGame()
+                    setupGame()
+                }
             }
             
         }
@@ -547,13 +555,74 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         shootButton.removeFromParent()
         asteroidTimer.invalidate()
         
-        // gmae over label
-        gameOverLabel = SKLabelNode(text: "Game Over!")
-        gameOverLabel.fontName = "Futura Medium"
-        gameOverLabel.position = center
-        gameOverLabel.name = "UIElement"
-        self.addChild(gameOverLabel)
+
+        
+        
+        let shrinkAction = SKAction.scaleBy(0, duration: 1.25)
+        let fadeAction = SKAction.fadeOutWithDuration(0.75)
+        let removePhysicsAction = SKAction.runBlock({
+            self.ship.physicsBody = nil
+        })
+        let removeNodeAction = SKAction.runBlock({
+            self.ship.removeFromParent()
+        })
+        let goAwayAction = SKAction.group([shrinkAction, fadeAction])
+        
+        let delayAction = SKAction.waitForDuration(1)
+        
+        let gameOverLabelAction = SKAction.runBlock({
+            self.gameOverLabel = SKLabelNode(text: "Game Over!")
+            self.gameOverLabel.fontName = "Futura Medium"
+            self.gameOverLabel.fontSize = 48
+            self.gameOverLabel.color = UIColor.whiteColor()
+            self.gameOverLabel.position = self.center
+            self.gameOverLabel.zPosition = 999
+            self.gameOverLabel.name = "UIElement"
+            self.addChild(self.gameOverLabel)
+        })
+        let playAgainButtonAction = SKAction.runBlock({
+            self.playAgainButton = SKLabelNode(text: "Play Again")
+            self.playAgainButton.fontName = "Futura Medium"
+            self.playAgainButton.fontSize = 32
+            self.playAgainButton.color = UIColor.whiteColor()
+            self.playAgainButton.position.x = self.frame.width/2
+            self.playAgainButton.position.y = self.frame.height/4
+            self.playAgainButton.zPosition = 999
+            self.playAgainButton.name = "UIElement"
+            self.addChild(self.playAgainButton)
+        })
+        
+        let changeAsteroidsToJTAction = SKAction.runBlock({
+            for node in self.children{
+                if ((node.name?.containsString("Asteroid")) == true){
+                    let thurman = SKSpriteNode(imageNamed: "JThurman")
+                    thurman.position = node.position
+                    thurman.zPosition = node.zPosition
+                    thurman.size = node.frame.size
+                    thurman.name = node.name
+                    thurman.physicsBody = node.physicsBody
+                    thurman.physicsBody?.angularDamping = node.physicsBody!.angularDamping
+                    thurman.physicsBody?.linearDamping = node.physicsBody!.linearDamping
+                    thurman.physicsBody?.categoryBitMask = node.physicsBody!.categoryBitMask
+                    thurman.physicsBody!.contactTestBitMask = node.physicsBody!.contactTestBitMask
+                    thurman.physicsBody?.angularVelocity = node.physicsBody!.angularVelocity
+                    thurman.physicsBody?.velocity = node.physicsBody!.velocity
+                    
+                    node.removeFromParent()
+                    self.addChild(thurman)
+                }
+            }
+
+        })
+        
+        
+        let gameOverAction = SKAction.sequence([removePhysicsAction, goAwayAction, gameOverLabelAction, delayAction, playAgainButtonAction, changeAsteroidsToJTAction, removeNodeAction])
+        
+        
+        self.ship.runAction(gameOverAction)
         gameOver = true
+
+        
     }
     
     

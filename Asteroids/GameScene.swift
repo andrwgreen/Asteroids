@@ -40,6 +40,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var score = 0
     var gameOver = false
     var center = CGPoint(x: 0, y: 0)
+    var smallestDimensionSize: CGFloat! // for laser timer
     
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */
@@ -50,6 +51,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.physicsBody?.contactTestBitMask = 0 //nothing bounces off of the edge, it will wrap instead
         self.backgroundColor = UIColor.blackColor();
         center = CGPointMake(self.frame.width / 2, self.frame.height/2)
+        
+        // set smallest dimension size
+        if self.frame.width > self.frame.height{
+            smallestDimensionSize = self.frame.height
+        }
+        else{
+            smallestDimensionSize = self.frame.width
+        }
         
         setupGame()
         
@@ -213,6 +222,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
     }
+    
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
         leftButtonPressed = false
         rightButtonPressed = false
@@ -355,9 +365,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         self.addChild(smallAsteroid)
     }
-    
-    
-    
+
     func random() -> CGFloat{
         //return random number 0-1
         return CGFloat(Float(arc4random()) / Float(UINT32_MAX))
@@ -383,10 +391,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         self.addChild(laser)
         
-        //Laser lifetime: t = d/v
-        // where t = time
-        //       d = self.frame.height
-        //       v = shot velocity (200)
+        // Laser lifetime: t = d/v
+        //   where t = time
+        //         d = self.frame.height
+        //         v = shot velocity (200)
+        let d = Double(smallestDimensionSize) - Double(ship.frame.height)
+        let laserAction = SKAction.sequence([SKAction.waitForDuration(d / Double(shotVelocity)), SKAction.removeFromParent()])
+        laser.runAction(laserAction)
+        
+        
     }
     
     // Takes a vector magnitude (CGFloat) and returns a CGPoint based on the zRotation of the

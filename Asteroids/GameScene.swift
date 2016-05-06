@@ -31,7 +31,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var rightButton: SKSpriteNode!
     var upButton:    SKSpriteNode!
     var shootButton: SKSpriteNode!
-    var resetButton: SKLabelNode!
     var playAgainButton: SKLabelNode!
     var upButtonPressed = false
     var leftButtonPressed = false
@@ -91,11 +90,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         shootButton.name = "UIElement"
         self.addChild(shootButton)
         
-        resetButton = SKLabelNode(text: "reset")
-        resetButton.position = CGPoint(x: self.frame.midX, y: self.frame.minY + resetButton.frame.height / 2)
-        resetButton.fontName = "Futura Medium"
-        self.addChild(resetButton)
-        
+        // Ship setup
         ship = SKSpriteNode(imageNamed: "Ship")
         ship.position = center
         ship.zPosition = 10
@@ -175,10 +170,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     rightButtonPressed = true
                 }
             }
-            if resetButton.containsPoint(location){
-                clearGame()
-                setupGame()
-            }
+            
             if playAgainButton != nil{
                 if playAgainButton.containsPoint(location){
                     clearGame()
@@ -221,7 +213,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
     }
-    
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
         leftButtonPressed = false
         rightButtonPressed = false

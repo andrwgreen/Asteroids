@@ -603,7 +603,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let changeAsteroidsToJTAction = SKAction.runBlock({
             for case let child as SKSpriteNode in self.children{
                 if ((child.name?.containsString("Asteroid")) == true){
-                    child.texture = SKTexture(imageNamed: "JThurman")
+                    child.texture = SKTexture(imageNamed: "JThurmanBigger")
                 }
             }
         })

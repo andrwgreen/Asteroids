@@ -93,7 +93,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         
         //Shoot Button
-        shootButton = SKSpriteNode(texture: SKTexture(imageNamed: "Fire"), size: CGSize(width: 120, height: 60))
+        shootButton = SKSpriteNode(texture: SKTexture(imageNamed: "Fire"), size: CGSize(width: 180, height: 180))
         shootButton.position = CGPoint(x: self.frame.width*0.15, y: self.frame.height*0.2)
         shootButton.zPosition = 999
         shootButton.name = "UIElement"
@@ -180,7 +180,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
             }
             
-            if playAgainButton != nil{
+            if (playAgainButton != nil && gameOver){
                 if playAgainButton.containsPoint(location){
                     clearGame()
                     setupGame()

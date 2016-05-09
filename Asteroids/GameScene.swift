@@ -38,6 +38,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var asteroidTimer: NSTimer!
     
     var score = 0
+    var numShots = 0
     var gameOver = false
     var center = CGPoint(x: 0, y: 0)
     var smallestDimensionSize: CGFloat! // for laser timer
@@ -163,7 +164,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 // TODO: Act on touches in control boxes
                 if shootButton.containsPoint(location){
                     shootLaser()
-                    runAction(SKAction.playSoundFileNamed("pew_final.wav", waitForCompletion: false))
                 }
                 
                 if upButton.containsPoint(location){
@@ -390,6 +390,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         laser.physicsBody?.linearDamping = 0
         
         self.addChild(laser)
+        playLaserSound()
         
         // Laser lifetime: t = d/v
         //   where t = time
@@ -398,8 +399,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let d = Double(smallestDimensionSize) - Double(ship.frame.height)
         let laserAction = SKAction.sequence([SKAction.waitForDuration(d / Double(shotVelocity)), SKAction.removeFromParent()])
         laser.runAction(laserAction)
-        
-        
+    }
+    
+    func playLaserSound(){
+        numShots++
+        if numShots > 60{
+            if random()*15  < 1{
+                runAction(SKAction.playSoundFileNamed("meow_final.wav", waitForCompletion: false))
+                numShots = 0
+            }
+            else{runAction(SKAction.playSoundFileNamed("pew_final.wav", waitForCompletion: false))}
+        }
+        else{runAction(SKAction.playSoundFileNamed("pew_final.wav", waitForCompletion: false))}
     }
     
     // Takes a vector magnitude (CGFloat) and returns a CGPoint based on the zRotation of the
@@ -476,6 +487,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         //actions
         
+        runAction(SKAction.playSoundFileNamed("explosion.wav", waitForCompletion: false))
+
         let shrinkAction = SKAction.scaleBy(0, duration: 1.25)
         let fadeAction = SKAction.fadeOutWithDuration(0.75)
         let removePhysicsAction = SKAction.runBlock({
